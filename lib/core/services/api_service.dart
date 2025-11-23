@@ -33,17 +33,21 @@ class ApiService {
       },
       onError: (DioException e, handler) async {
         // If 401 Unauthorized, try to refresh token
-        if (e.response?.statusCode == 401) {
+        if (e.response?.statusCode == 401 || e.response?.statusCode == 403) {
+          print("🔴 401 Error Detected: Access Token Expired!");
           try {
+            print("🔄 Attempting to refresh token...");
             final newAccessToken = await _refreshToken();
             if (newAccessToken != null) {
               // Retry the original request with new token
+              print("✅ Refresh Successful! Retrying original request...");
               e.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
               final cloneReq = await _dio.fetch(e.requestOptions);
               return handler.resolve(cloneReq);
             }
           } catch (_) {
             // Refresh failed, user session is invalid
+            print("❌ Refresh Failed. Logging out.");
             await _storage.clearTokens();
           }
         }

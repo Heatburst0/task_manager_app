@@ -16,14 +16,22 @@ enum AuthMode { login, signup }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  // Controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPassController = TextEditingController(); // 1. New Controller
+
+  // State Variables
   AuthMode _authMode = AuthMode.login;
+  bool _isPasswordVisible = false; // 2. Toggle state for Password
+  bool _isConfirmVisible = false;  // 3. Toggle state for Confirm Password
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPassController.dispose();
     super.dispose();
   }
 
@@ -94,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.check_circle_outline, // Changed Icon to match Task App
+                Icon(Icons.check_circle_outline,
                     size: 64, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(height: 16),
                 Text(
@@ -111,8 +119,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 40),
                 _buildForm(context),
-                const SizedBox(height: 24),
-                // _buildSocialLogin(context), // Hiding social login as backend doesn't support it yet
               ],
             ).animate().fadeIn(duration: 500.ms),
           ),
@@ -123,11 +129,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Widget _buildForm(BuildContext context) {
     final isLoading = ref.watch(authControllerProvider).isLoading;
+    final theme = Theme.of(context);
 
     return Form(
       key: _formKey,
       child: Column(
         children: [
+          // --- EMAIL FIELD ---
           TextFormField(
             controller: _emailController,
             decoration: const InputDecoration(
@@ -137,16 +145,66 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Validators.isValidEmail(val ?? '') ? null : 'Enter a valid email',
           ),
           const SizedBox(height: 16),
+
+          // --- PASSWORD FIELD ---
           TextFormField(
             controller: _passwordController,
-            decoration: const InputDecoration(
-                labelText: 'Password', prefixIcon: Icon(Icons.lock_outline)),
-            obscureText: true,
+            // 4. Use State variable to toggle visibility
+            obscureText: !_isPasswordVisible,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              prefixIcon: const Icon(Icons.lock_outline),
+              // 5. Add Toggle Icon Button
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
+            ),
             validator: (val) => Validators.isValidPassword(val ?? '')
                 ? null
                 : 'Password too short (min 6 chars)',
           ),
+
+          // --- CONFIRM PASSWORD FIELD (Only for Sign Up) ---
+          if (_authMode == AuthMode.signup) ...[
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _confirmPassController,
+              obscureText: !_isConfirmVisible,
+              decoration: InputDecoration(
+                labelText: 'Confirm Password',
+                prefixIcon: const Icon(Icons.lock_reset),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isConfirmVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isConfirmVisible = !_isConfirmVisible;
+                    });
+                  },
+                ),
+              ),
+              validator: (val) {
+                if (val != _passwordController.text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+            ).animate().fadeIn().slideY(begin: -0.2, end: 0),
+          ],
+
           const SizedBox(height: 24),
+
+          // --- SUBMIT BUTTON ---
           SizedBox(
             width: double.infinity,
             child: isLoading
@@ -157,15 +215,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   _authMode == AuthMode.login ? 'Login' : 'Sign Up'),
             ),
           ),
+
+          // --- SWITCH MODE BUTTON ---
           TextButton(
-            onPressed: _switchAuthMode,
+            onPressed: () {
+              // Clear inputs when switching
+              _formKey.currentState?.reset();
+              _emailController.clear();
+              _passwordController.clear();
+              _confirmPassController.clear();
+              _switchAuthMode();
+            },
             child: Text(_authMode == AuthMode.login
                 ? "Don't have an account? Sign Up"
                 : "Already have an account? Login"),
           ),
         ]
-            .animate(interval: 100.ms)
-            .slideY(begin: 0.5, end: 0, curve: Curves.easeOutCubic)
+            .animate(interval: 50.ms)
+            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic)
             .fadeIn(),
       ),
     );

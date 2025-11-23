@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/router/router.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -16,10 +17,9 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Task Manager',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       routerConfig: router,
     );
   }

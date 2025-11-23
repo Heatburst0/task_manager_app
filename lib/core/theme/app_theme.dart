@@ -5,7 +5,7 @@ class AppTheme {
   // --- Color Palette ---
   static const Color primaryColor = Color(0xFF004D40); // Deep Teal
   static const Color primaryLightColor = Color(0xFF00796B);
-  static const Color accentColor = Color(0xFFFFA726); // Warm Amber
+  static const Color accentColor = Color(0xFFFFA726); // Warm Amber <--- Using this
   static const Color backgroundColorLight = Color(0xFFF1F4F8);
   static const Color cardColorLight = Colors.white;
   static const Color textColorLight = Color(0xFF1C2A3A);
@@ -42,18 +42,36 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       shadowColor: primaryColor.withOpacity(0.1),
     ),
+
+    // --- UPDATED INPUT DECORATION (BORDERS) ---
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.grey.shade100,
-      border: OutlineInputBorder(
+      fillColor: Colors.white, // Made explicit white for better contrast with border
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+
+      // 1. Border when the field is NOT focused (Idle)
+      enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
+
+      // 2. Border when the field IS focused (Typing)
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: primaryColor, width: 2),
+        borderSide: const BorderSide(color: primaryColor, width: 1.5),
+      ),
+
+      // 3. Border when there is an error (e.g., Invalid email)
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 2.5),
       ),
     ),
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
@@ -98,18 +116,37 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       shadowColor: Colors.black.withOpacity(0.5),
     ),
+
+    // --- UPDATED DARK MODE BORDERS ---
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.grey.shade800.withOpacity(0.5),
-      border: OutlineInputBorder(
+      fillColor: Colors.grey.shade900,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+
+      floatingLabelStyle: const TextStyle(
+          color: Colors.white,
+      ),
+      // Using Accent Color for borders in Dark Mode too
+      enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
+
+      // 2. Border when the field IS focused (Typing)
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: primaryLightColor, width: 2),
+        borderSide: const BorderSide(color: primaryLightColor, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 2.5),
       ),
     ),
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryLightColor,

@@ -89,6 +89,6 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<Task>>> {
   }
 }
 
-final taskProvider = StateNotifierProvider<TaskNotifier, AsyncValue<List<Task>>>((ref) {
+final taskProvider = StateNotifierProvider.autoDispose<TaskNotifier, AsyncValue<List<Task>>>((ref) {
   return TaskNotifier(ref.watch(taskRepositoryProvider));
 });

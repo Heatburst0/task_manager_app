@@ -3,8 +3,10 @@
 A robust, full-stack task management solution featuring a secure Node.js backend and a modern, responsive Flutter mobile application. This project demonstrates clean architecture, secure authentication flows (JWT), and real-time state management.
 
 # App Preview (Light Mode)
-<img width="1920" height="1080" alt="Group 109" src="https://github.com/user-attachments/assets/13341bf7-e0ac-44d7-90cc-f84fca445f3d" />
+<img width="1920" height="1080" alt="Group 109" src="https://github.com/user-attachments/assets/e3922861-5723-4a84-9ff7-bd5874eeae25" />
 
+# App Preview (Dark Mode)
+<img width="1920" height="1080" alt="Slide 16_9 - 2" src="https://github.com/user-attachments/assets/9b941f3f-9de7-418e-8923-48c5ce9e1bfd" />
 
 ---
 
